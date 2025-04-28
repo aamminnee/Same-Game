@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.Queue;
 
+
 public class ControlleurGrille implements MouseListener {
     
     //initialisation des attributs
@@ -11,10 +12,10 @@ public class ControlleurGrille implements MouseListener {
     private Grille vue;
     private Bloc bloc;
     private int ordreGraphe;
-    private Fenetre frame;
+    private Jeu frame;
     private int ordreGrapheSelect;
 
-    public ControlleurGrille(Grille vue, Bloc bloc, Fenetre fenetre) {
+    public ControlleurGrille(Grille vue, Bloc bloc, Jeu fenetre) {
         this.vue = vue;
         this.grille = vue.getGrille();
         this.bloc = bloc;
@@ -42,7 +43,7 @@ public class ControlleurGrille implements MouseListener {
             // calculs du score
             int points = (int) Math.pow(this.ordreGraphe - 2, 2);
             this.frame.setScore(this.frame.getScore() + points);
-            this.frame.setTitle("Score : " + this.frame.getScore() + " | " + this.frame.getTitre());
+            this.frame.setTitle("Score : " + this.frame.getScore());
         }
         this.conditionFinPartie();
             
@@ -60,7 +61,11 @@ public class ControlleurGrille implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        this.trouveEnsemble(bloc, 1);
+        this.ordreGrapheSelect = 0;
+        this.trouveEnsemble(bloc, 4);
+        if (this.ordreGrapheSelect > 1) { // si le joueur clique sur un bloc de la grille
+            this.trouveEnsemble(bloc, 1);
+        }   
     }
 
     @Override
@@ -228,10 +233,9 @@ public class ControlleurGrille implements MouseListener {
     
         // Vérifier si la grille est vide ou si tous les blocs restants sont seuls
         if (toutesCasesSupprimees || allBlocSeul) {
-            this.frame.setEstFin(true);
-            this.frame.setEstJeu(false);
-            this.frame.setEstJeu2(false);
-            this.frame.updateView();
+            FinJeu finJeu = new FinJeu(this.frame.getTitre(), this.frame.getScore());
+            finJeu.setVisible(true);
+            this.frame.dispose();
         }
     }
     
